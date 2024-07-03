@@ -1,15 +1,4 @@
 function createItem(title, details, dueDate, priority, project) {
-    let checklist = false;
-    const getChecklist = () => checklist;
-    
-    const switchChecklist = () => {
-        if (checklist == false) {
-            checklist = true;
-        } else {
-            checklist = false;
-        }
-    }
-
     const getTitle = () => title;
     const setTitle = newTitle => title = newTitle;
     const getDetails = () => details;
@@ -21,7 +10,19 @@ function createItem(title, details, dueDate, priority, project) {
     const getProject = () => project;
     const setProject = newProject => project = newProject;
 
-    return { getChecklist, switchChecklist, getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject }
+    let checklist = false;
+    const getChecklist = () => checklist;
+    const setChecklist = () => checklist = switchChecklist(checklist);
+
+    return { getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist }
+}
+
+function switchChecklist(checklist) {
+    if (checklist == false) {
+        return true;
+    }
+    
+    return false;
 }
 
 export { createItem };

@@ -12,23 +12,26 @@
             <button id="about">About</button>
         </nav>
     </header>
-    <form id="form">
-        <label for="title">Title: <input type="text" id="title" name="title" class="label" required></label><br/>
-        <label for="details">Details: <input type="text" id="details" name="details" class="label" required></label><br/>
-        <label for="due-date">Due Date: <input type="number" id="due-date" name="due-date" class="label" required></label>
-        <div>
-            Priority:
-            <input type="radio" id="high" name="priority" value="high" required><label for="high">High</label>
-            <input type="radio" id="medium" name="priority" value="medium"><label for="medium">Medium</label>
-            <input type="radio" id="low" name="priority" value="low" required><label for="low">Low</label>
-        </div>
-        <div>
-            Project:
-            <input type="radio" id="default" name="project" value="default" required><label for="default">Default</label>
-            <input type="radio" id="new" name="project" value="new"><label for="new">New</label>
-        </div>
-        <button type="submit" id="submit">Submit</button> <button type="reset" id="reset">Reset</button>
-    </form>
+    <dialog>
+        <form id="form">
+            <label for="title">Title: <input type="text" id="title" name="title" class="label" required></label><br/>
+            <label for="details">Details: <input type="text" id="details" name="details" class="label" required></label><br/>
+            <label for="due-date">Due Date: <input type="number" id="due-date" name="due-date" class="label" required></label>
+            <div>
+                Priority:
+                <input type="radio" id="high" name="priority" value="high" required><label for="high">High</label>
+                <input type="radio" id="medium" name="priority" value="medium"><label for="medium">Medium</label>
+                <input type="radio" id="low" name="priority" value="low" required><label for="low">Low</label>
+            </div>
+            <div>
+                Project:
+                <input type="radio" id="default" name="project" value="default" required><label for="default">Default</label>
+                <input type="radio" id="new" name="project" value="new"><label for="new">New</label>
+            </div>
+            <button type="submit" id="submit">Submit</button> <button type="reset" id="reset">Reset</button> <button type="button" id="close">Close</button>
+        </form>
+    </dialog>
+    <button id="new-item">Add To-Do Item</button>
     <div id="content"></div>
 </body>
 </html>

@@ -6,14 +6,17 @@
 </head>
 <body>
     <header>
-        <nav>
-            <button id="home">Home</button>
-            <button id="menu">Menu</button>
-            <button id="about">About</button>
-        </nav>
+        <nav></nav>
     </header>
-    <dialog>
-        <form id="form">
+    <dialog id="new-project-dialog">
+        <form id="project-form">
+            <label for="project-title">Project Title: <input type="text" id="project-title" name="project-title" class="label" required></label><br/>
+            <button type="submit" class="submit">Submit</button> <button type="reset" class="reset">Reset</button> <button type="button" id="project-close" class="close">Close</button>
+        </form>
+    </dialog>
+    <button id="new-project">Create Project</button>
+    <dialog id="new-item-dialog">
+        <form id="item-form">
             <label for="title">Title: <input type="text" id="title" name="title" class="label" required></label><br/>
             <label for="details">Details: <input type="text" id="details" name="details" class="label" required></label><br/>
             <label for="due-date">Due Date: <input type="number" id="due-date" name="due-date" class="label" required></label>
@@ -28,7 +31,7 @@
                 <input type="radio" id="default" name="project" value="default" required><label for="default">Default</label>
                 <input type="radio" id="new" name="project" value="new"><label for="new">New</label>
             </div>
-            <button type="submit" id="submit">Submit</button> <button type="reset" id="reset">Reset</button> <button type="button" id="close">Close</button>
+            <button type="submit" class="submit">Submit</button> <button type="reset" class="reset">Reset</button> <button type="button" id="item-close" class="close">Close</button>
         </form>
     </dialog>
     <button id="new-item">Add To-Do Item</button>

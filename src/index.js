@@ -1,6 +1,9 @@
+import './styles.css';
 import { createItem } from './item.js';
+import { createProject } from './project.js';
 
 const allToDos = [];
+const projects = [];
 
 function addItem(item) {
     allToDos.push(item);
@@ -15,11 +18,11 @@ addItem(hobbit);
 addItem(lotr);
 addItem(silmarillion);
 
-function showAllItems() {
-    allToDos.forEach((each, index) => content.appendChild(showOneItem(each, index)));
-}
-
 const content = document.querySelector('#content');
+
+function showAllItems() {
+    allToDos.forEach((element, index) => content.appendChild(showOneItem(element, index)));
+}
 
 showAllItems();
 
@@ -105,24 +108,97 @@ function restartToDo() {
     showAllItems();
 }
 
-const dialog = document.querySelector('dialog');
+const itemDialog = document.querySelector('#new-item-dialog');
 const newItemButton = document.querySelector('#new-item');
-const form = document.querySelector('#form');
-const closeButton = document.querySelector('#close');
+const itemForm = document.querySelector('#item-form');
+const closeItemButton = document.querySelector('#item-close');
 
-newItemButton.addEventListener('click', () => dialog.showModal());
-form.addEventListener('submit', submitForm);
-closeButton.addEventListener('click', () => dialog.close());
+newItemButton.addEventListener('click', () => itemDialog.showModal());
+itemForm.addEventListener('submit', submitItemForm);
+closeItemButton.addEventListener('click', () => itemDialog.close());
 
-function submitForm(event) {
-    const title = document.querySelector('#title');
-    const details = document.querySelector('#details');
-    const dueDate = document.querySelector('#due-date');
-    const priority = document.querySelector('input[name=priority]:checked');
-    const project = document.querySelector('input[name=project]:checked');
+function submitItemForm(event) {
+    const itemTitle = document.querySelector('#title');
+    const itemDetails = document.querySelector('#details');
+    const itemDueDate = document.querySelector('#due-date');
+    const itemPriority = document.querySelector('input[name=priority]:checked');
+    const itemProject = document.querySelector('input[name=project]:checked');
 
-    addItem(createItem(title.value, details.value, dueDate.value, priority.value, project.value)); // Create object and add to allToDos array.
-    dialog.close();
+    addItem(createItem(itemTitle.value, itemDetails.value, itemDueDate.value, itemPriority.value, itemProject.value)); // Create object and add to allToDos array.
+    itemDialog.close();
     content.appendChild(showOneItem(allToDos[allToDos.length - 1], allToDos.length - 1)); // showOneItem(element, index) - Access latest item in allToDos array and append it to #content in the DOM.
     event.preventDefault();
+}
+
+//----------
+
+function addProject(item) {
+    projects.push(item);
+}
+
+// Default project
+const defaultProject = createProject('Default');
+addProject(defaultProject);
+
+const projectDialog = document.querySelector('#new-project-dialog');
+const newProjectButton = document.querySelector('#new-project');
+const projectForm = document.querySelector('#project-form');
+const closeProjectButton = document.querySelector('#project-close');
+
+newProjectButton.addEventListener('click', () => projectDialog.showModal());
+projectForm.addEventListener('submit', submitProjectForm);
+closeProjectButton.addEventListener('click', () => projectDialog.close());
+
+function submitProjectForm(event) {
+    const projectTitle = document.querySelector('#project-title');
+
+    addProject(createProject(projectTitle.value)); // Create object and add to projects array.
+    projectDialog.close();
+    nav.appendChild(showOneProject(projects[projects.length - 1], projects.length - 1)); // showOneProject(element, index) - Access latest item in projects array and append it to #content in the DOM.
+    event.preventDefault();
+}
+
+const nav = document.querySelector('nav');
+
+function showAllProjects() {
+    projects.forEach((element, index) => nav.appendChild(showOneProject(element, index)));
+}
+
+showAllProjects();
+
+function showOneProject(element, index) {
+    const button = document.createElement('button');
+    
+    button.innerHTML = element.getTitle();
+    /*const itemTitle = document.createElement('div');
+    const itemDetails = document.createElement('div');
+    const itemDueDate = document.createElement('div');
+    const itemPriority = document.createElement('div');
+    const itemProject = document.createElement('div');
+    const itemChecklist = document.createElement('div');
+    const selections = document.createElement('div');
+
+    box.setAttribute('class', 'box');
+    //box.setAttribute('id', index);
+    
+    itemTitle.innerHTML = element.getTitle();
+    itemDetails.innerHTML = element.getDetails();
+    itemDueDate.innerHTML = element.getDueDate();
+    itemPriority.innerHTML = element.getPriority();
+    itemProject.innerHTML = element.getProject();
+    itemChecklist.innerHTML = element.getChecklist();
+
+    selections.setAttribute('class', 'selections');
+    selections.appendChild(createRemoveButton(index));
+    selections.appendChild(createDoneButton(element, index));
+
+    box.appendChild(itemTitle);
+    box.appendChild(itemDetails);
+    box.appendChild(itemDueDate);
+    box.appendChild(itemPriority);
+    box.appendChild(itemProject);
+    box.appendChild(itemChecklist);
+    box.appendChild(selections);*/
+
+    return button; // Return to function in showAllItems()
 }

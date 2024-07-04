@@ -10,21 +10,22 @@ function addItem(item) {
 }
 
 // Demo data
-const hobbit = createItem('The Hobbit', 'J.R.R. Tolkien', 310, 'medium', 'default');
-const lotr = createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', 1077, 'high', 'default');
-const silmarillion = createItem('The Silmarillion', 'J.R.R. Tolkien', 365, 'low', 'default');
+const hobbit = createItem('The Hobbit', 'J.R.R. Tolkien', 310, 'medium', 'Default 1');
+const lotr = createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', 1077, 'high', 'Default 1');
+const silmarillion = createItem('The Silmarillion', 'J.R.R. Tolkien', 365, 'low', 'Default 2');
 
 addItem(hobbit);
 addItem(lotr);
 addItem(silmarillion);
 
+// Default projects
+addProject(createProject('Default 1'));
+addProject(createProject('Default 2'));
+addProject(createProject('Default 3'));
+
 const content = document.querySelector('#content');
 
-function showAllItems() {
-    allToDos.forEach((element, index) => content.appendChild(showOneItem(element, index)));
-}
 
-showAllItems();
 
 function showOneItem(element, index) {
     const box = document.createElement('div');
@@ -73,7 +74,7 @@ function createRemoveButton(index) {
 
 function removeItem(itemID) {
     allToDos.splice(itemID, 1); // Remove one element starting at itemID
-    restartToDo();
+    showAllItems();
 }
 
 function createDoneButton(element, index) {
@@ -100,11 +101,6 @@ function createDoneButton(element, index) {
 
 function toggleDone(index) {
     allToDos[index].setChecklist();
-    restartToDo();
-}
-
-function restartToDo() {
-    content.innerHTML = '';
     showAllItems();
 }
 
@@ -136,9 +132,32 @@ function addProject(item) {
     projects.push(item);
 }
 
-// Default project
-const defaultProject = createProject('Default');
-addProject(defaultProject);
+const showAll = document.querySelector('#show-all');
+showAll.addEventListener('click', showAllItems.bind(this, false));
+
+
+const itemProjects = document.querySelector('#item-projects');
+
+function addProjectsToForm() {
+    projects.forEach((element, index) => {
+        const projectChoice = document.createElement('input');
+        const projectLabel = document.createElement('label');
+
+        projectChoice.setAttribute('type', 'radio');
+        projectChoice.setAttribute('id', index);
+        projectChoice.setAttribute('name', 'project');
+        projectChoice.setAttribute('value', element.getTitle());
+        projectChoice.setAttribute('required', 'true');
+
+        projectLabel.setAttribute('for', index);
+        projectLabel.innerHTML = element.getTitle();
+        
+        itemProjects.appendChild(projectChoice);
+        itemProjects.appendChild(projectLabel);
+    });
+}
+
+addProjectsToForm();
 
 const projectDialog = document.querySelector('#new-project-dialog');
 const newProjectButton = document.querySelector('#new-project');
@@ -155,6 +174,8 @@ function submitProjectForm(event) {
     addProject(createProject(projectTitle.value)); // Create object and add to projects array.
     projectDialog.close();
     nav.appendChild(showOneProject(projects[projects.length - 1], projects.length - 1)); // showOneProject(element, index) - Access latest item in projects array and append it to #content in the DOM.
+    itemProjects.innerHTML = 'Project:';
+    addProjectsToForm();
     event.preventDefault();
 }
 
@@ -168,37 +189,24 @@ showAllProjects();
 
 function showOneProject(element, index) {
     const button = document.createElement('button');
-    
+    button.setAttribute('class', 'button');
     button.innerHTML = element.getTitle();
-    /*const itemTitle = document.createElement('div');
-    const itemDetails = document.createElement('div');
-    const itemDueDate = document.createElement('div');
-    const itemPriority = document.createElement('div');
-    const itemProject = document.createElement('div');
-    const itemChecklist = document.createElement('div');
-    const selections = document.createElement('div');
-
-    box.setAttribute('class', 'box');
-    //box.setAttribute('id', index);
+    button.addEventListener('click', showAllItems.bind(this, button.innerHTML));
     
-    itemTitle.innerHTML = element.getTitle();
-    itemDetails.innerHTML = element.getDetails();
-    itemDueDate.innerHTML = element.getDueDate();
-    itemPriority.innerHTML = element.getPriority();
-    itemProject.innerHTML = element.getProject();
-    itemChecklist.innerHTML = element.getChecklist();
-
-    selections.setAttribute('class', 'selections');
-    selections.appendChild(createRemoveButton(index));
-    selections.appendChild(createDoneButton(element, index));
-
-    box.appendChild(itemTitle);
-    box.appendChild(itemDetails);
-    box.appendChild(itemDueDate);
-    box.appendChild(itemPriority);
-    box.appendChild(itemProject);
-    box.appendChild(itemChecklist);
-    box.appendChild(selections);*/
-
-    return button; // Return to function in showAllItems()
+    return button; // Return to function in showAllProjects()
 }
+
+function showAllItems(selectedProject = false) {
+    content.innerHTML = '';
+    allToDos.forEach((element, index) => {
+        if (!selectedProject) { // When the page first loads or the Show All button is clicked, show all items.
+            content.appendChild(showOneItem(element, index));
+        } else { // If a project button is clicked, show items under that project only.
+            if (element.getProject() == selectedProject) { // If item's project is the same as that of the clicked button,
+                content.appendChild(showOneItem(element, index)); // Add to content
+            }
+        }
+    });
+}
+
+showAllItems();

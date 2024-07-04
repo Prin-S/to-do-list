@@ -5,6 +5,8 @@ import { createProject } from './project.js';
 const allToDos = [];
 const projects = [];
 
+let currentProject = false;
+
 function addItem(item) {
     allToDos.push(item);
 }
@@ -74,7 +76,7 @@ function createRemoveButton(index) {
 
 function removeItem(itemID) {
     allToDos.splice(itemID, 1); // Remove one element starting at itemID
-    showAllItems();
+    showAllItems(currentProject);
 }
 
 function createDoneButton(element, index) {
@@ -101,7 +103,7 @@ function createDoneButton(element, index) {
 
 function toggleDone(index) {
     allToDos[index].setChecklist();
-    showAllItems();
+    showAllItems(currentProject);
 }
 
 const itemDialog = document.querySelector('#new-item-dialog');
@@ -134,7 +136,6 @@ function addProject(item) {
 
 const showAll = document.querySelector('#show-all');
 showAll.addEventListener('click', showAllItems.bind(this, false));
-
 
 const itemProjects = document.querySelector('#item-projects');
 
@@ -192,16 +193,19 @@ function showOneProject(element, index) {
     button.setAttribute('class', 'button');
     button.innerHTML = element.getTitle();
     button.addEventListener('click', showAllItems.bind(this, button.innerHTML));
-    
+
     return button; // Return to function in showAllProjects()
 }
 
 function showAllItems(selectedProject = false) {
     content.innerHTML = '';
+    console.log(selectedProject);
     allToDos.forEach((element, index) => {
         if (!selectedProject) { // When the page first loads or the Show All button is clicked, show all items.
+            currentProject = false;
             content.appendChild(showOneItem(element, index));
         } else { // If a project button is clicked, show items under that project only.
+            currentProject = selectedProject;
             if (element.getProject() == selectedProject) { // If item's project is the same as that of the clicked button,
                 content.appendChild(showOneItem(element, index)); // Add to content
             }

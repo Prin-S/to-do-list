@@ -12,9 +12,9 @@ function addItem(item) {
 }
 
 // Demo data
-const hobbit = createItem('The Hobbit', 'J.R.R. Tolkien', 310, 'medium', 'Default 1');
-const lotr = createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', 1077, 'high', 'Default 1');
-const silmarillion = createItem('The Silmarillion', 'J.R.R. Tolkien', 365, 'low', 'Default 2');
+const hobbit = createItem('The Hobbit', 'J.R.R. Tolkien', 310, 'Medium', 'Default 1');
+const lotr = createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', 1077, 'High', 'Default 1');
+const silmarillion = createItem('The Silmarillion', 'J.R.R. Tolkien', 365, 'Low', 'Default 2');
 
 addItem(hobbit);
 addItem(lotr);
@@ -31,52 +31,76 @@ const content = document.querySelector('#content');
 
 function showOneItem(element, index) {
     const box = document.createElement('div');
+    box.setAttribute('id', `box${index}`);
+
+    if (element.getPriority() == 'High') {
+        box.setAttribute('class', 'box box-bg-high');
+    } else if (element.getPriority() == 'Medium') {
+        box.setAttribute('class', 'box box-bg-medium');
+    } else {
+        box.setAttribute('class', 'box box-bg-low');
+    }
+
+    const itemSummary = document.createElement('div');
+    itemSummary.innerHTML = `${element.getTitle()} || Due: ${element.getDueDate()}`;
+
     const itemTitle = document.createElement('div');
+    itemTitle.innerHTML = `<strong>Title:</strong> ${element.getTitle()}`;
+
     const itemDetails = document.createElement('div');
+    itemDetails.innerHTML = `<strong>Details:</strong> ${element.getDetails()}`;
+
     const itemDueDate = document.createElement('div');
+    itemDueDate.innerHTML = `<strong>Due Date:</strong> ${element.getDueDate()}`;
+
     const itemPriority = document.createElement('div');
+    itemPriority.innerHTML = `<strong>Priority:</strong> ${element.getPriority()}`;
+
     const itemProject = document.createElement('div');
+    itemProject.innerHTML = `<strong>Project:</strong> ${element.getProject()}`;
+
     const itemChecklist = document.createElement('div');
+
+    if (element.getChecklist()) {
+        itemChecklist.innerHTML = '<strong>Status:</strong> Done';
+        itemSummary.setAttribute('class', 'strike-through');
+    } else {
+        itemChecklist.innerHTML = '<strong>Status:</strong> Not done';
+    }
+
+    /*const expandButton = document.createElement('button');
+    expandButton.setAttribute('class', 'box-button');
+    expandButton.innerHTML = 'Expand';
+    expandButton.addEventListener('click', () => itemFullDetails.showModal());*/
+
+    const itemFullDetails = document.createElement('dialog');
+    itemFullDetails.setAttribute('id', 'item-full-details-dialog');
+
+    const closeFullDetails = document.createElement('button');
+    closeFullDetails.setAttribute('class', 'dialog-button');
+    closeFullDetails.innerHTML = 'Close';
+    closeFullDetails.addEventListener('click', () => itemFullDetails.close());
+
     const selections = document.createElement('div');
-
-    box.setAttribute('class', 'box');
-    //box.setAttribute('id', index);
-    
-    itemTitle.innerHTML = element.getTitle();
-    itemDetails.innerHTML = element.getDetails();
-    itemDueDate.innerHTML = element.getDueDate();
-    itemPriority.innerHTML = element.getPriority();
-    itemProject.innerHTML = element.getProject();
-    itemChecklist.innerHTML = element.getChecklist();
-
     selections.setAttribute('class', 'selections');
-    selections.appendChild(createRemoveButton(index));
     selections.appendChild(createDoneButton(element, index));
+    selections.appendChild(createRemoveButton(index));
+    selections.appendChild(createExpandButton(element, index));
 
-    box.appendChild(itemTitle);
-    box.appendChild(itemDetails);
-    box.appendChild(itemDueDate);
-    box.appendChild(itemPriority);
-    box.appendChild(itemProject);
-    box.appendChild(itemChecklist);
+    box.appendChild(itemSummary);
     box.appendChild(selections);
 
+    itemFullDetails.appendChild(itemTitle);
+    itemFullDetails.appendChild(itemDueDate);
+    itemFullDetails.appendChild(itemDetails);
+    itemFullDetails.appendChild(itemPriority);
+    itemFullDetails.appendChild(itemProject);
+    itemFullDetails.appendChild(itemChecklist);
+    itemFullDetails.appendChild(closeFullDetails);
+
+    content.appendChild(itemFullDetails);
+
     return box; // Return to function in showAllItems()
-}
-
-function createRemoveButton(index) {
-    const removeButton = document.createElement('button');
-
-    removeButton.setAttribute('id', index);
-    removeButton.innerHTML = 'x';
-    removeButton.addEventListener('click', removeItem.bind(this, removeButton.id));
-
-    return removeButton; // Return to function in showOneItem(element, index)
-}
-
-function removeItem(itemID) {
-    allToDos.splice(itemID, 1); // Remove one element starting at itemID
-    showAllItems(currentProject);
 }
 
 function createDoneButton(element, index) {
@@ -104,6 +128,54 @@ function createDoneButton(element, index) {
 function toggleDone(index) {
     allToDos[index].setChecklist();
     showAllItems(currentProject);
+}
+
+function createRemoveButton(index) {
+    const removeButton = document.createElement('button');
+
+    removeButton.setAttribute('id', index);
+    removeButton.setAttribute('class', 'box-button');
+    removeButton.innerHTML = 'Delete';
+    removeButton.addEventListener('click', removeItem.bind(this, removeButton.id));
+
+    return removeButton; // Return to function in showOneItem(element, index)
+}
+
+function removeItem(itemID) {
+    allToDos.splice(itemID, 1); // Remove one element starting at itemID
+    showAllItems(currentProject);
+}
+
+function createExpandButton(element, index) {
+    const expandButton = document.createElement('button');
+    
+    expandButton.setAttribute('id', `expand${index}`);
+    expandButton.setAttribute('class', 'box-button');
+    expandButton.innerHTML = 'Expand';
+    expandButton.addEventListener('click', expandItem.bind(this, element, index));
+
+    return expandButton; // Return to function in showOneItem(element, index)
+}
+
+function expandItem(element, index) {
+    const expandedBox = document.querySelector(`#box${index}`);
+    const expandedExpandButton = document.querySelector(`#expand${index}`);
+
+    const itemDetails = document.createElement('div');
+    itemDetails.setAttribute('id', `details${index}`);
+    itemDetails.innerHTML = `<strong>Details:</strong> ${element.getDetails()}`;
+
+    if (expandedExpandButton.innerHTML == 'Expand') {
+        expandedExpandButton.innerHTML = 'Shrink';
+        expandedBox.appendChild(itemDetails);
+    } else {
+        expandedExpandButton.innerHTML = 'Expand';
+        expandedBox.removeChild(expandedBox.lastElementChild);
+    }
+    
+
+
+
 }
 
 const itemDialog = document.querySelector('#new-item-dialog');
@@ -199,7 +271,7 @@ function showOneProject(element, index) {
 
 function showAllItems(selectedProject = false) {
     content.innerHTML = '';
-    console.log(selectedProject);
+
     allToDos.forEach((element, index) => {
         if (!selectedProject) { // When the page first loads or the Show All button is clicked, show all items.
             currentProject = false;

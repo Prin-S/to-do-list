@@ -10,31 +10,33 @@
             <button id="show-all" class="button">Show All</button>
         </nav>
     </header>
-    <dialog id="new-project-dialog">
-        <form id="project-form">
-            <label for="project-title">Project Title: <input type="text" id="project-title" name="project-title" class="label" required></label><br/>
-            <button type="submit" class="submit">Submit</button> <button type="reset" class="reset">Reset</button> <button type="button" id="project-close" class="close">Close</button>
-        </form>
-    </dialog>
-    <button id="new-project" class="button">Create Project</button>
-    <dialog id="new-item-dialog">
-        <form id="item-form">
-            <label for="title">Title: <input type="text" id="title" name="title" class="label" required></label><br/>
-            <label for="details">Details: <input type="text" id="details" name="details" class="label" required></label><br/>
-            <label for="due-date">Due Date: <input type="number" id="due-date" name="due-date" class="label" required></label>
-            <div>
-                Priority:
-                <input type="radio" id="high" name="priority" value="high" required><label for="high">High</label>
-                <input type="radio" id="medium" name="priority" value="medium"><label for="medium">Medium</label>
-                <input type="radio" id="low" name="priority" value="low" required><label for="low">Low</label>
-            </div>
-            <div id="item-projects">
-                Project:
-            </div>
-            <button type="submit" class="submit">Submit</button> <button type="reset" class="reset">Reset</button> <button type="button" id="item-close" class="close">Close</button>
-        </form>
-    </dialog>
-    <button id="new-item" class="button">Add To-Do Item</button>
+    <div id="create-add">
+        <dialog id="new-project-dialog">
+            <form id="project-form">
+                <label for="project-title">Project Title: <input type="text" id="project-title" name="project-title" class="label" required></label><br/>
+                <button type="submit" class="dialog-button">Submit</button><button type="reset" class="dialog-button">Reset</button><button type="button" id="project-close" class="dialog-button">Close</button>
+            </form>
+        </dialog>
+        <button id="new-project" class="button">Create Project</button>
+        <dialog id="new-item-dialog">
+            <form id="item-form">
+                <label for="title">Title: <input type="text" id="title" name="title" class="label" required></label><br/>
+                <label for="details">Details: <input type="text" id="details" name="details" class="label" required></label><br/>
+                <label for="due-date">Due Date: <input type="date" id="due-date" name="due-date" class="label" required></label>
+                <div>
+                    Priority:
+                    <input type="radio" id="high" name="priority" value="High" required><label for="high">High</label>
+                    <input type="radio" id="medium" name="priority" value="Medium"><label for="medium">Medium</label>
+                    <input type="radio" id="low" name="priority" value="Low" required><label for="low">Low</label>
+                </div>
+                <div id="item-projects">
+                    Project:
+                </div>
+                <button type="submit" class="dialog-button">Submit</button><button type="reset" class="dialog-button">Reset</button><button type="button" id="item-close" class="dialog-button">Close</button>
+            </form>
+        </dialog>
+        <button id="new-item" class="button">Add To-Do Item</button>
+    </div>
     <div id="content"></div>
 </body>
 </html>

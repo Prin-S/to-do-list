@@ -5,6 +5,10 @@ p, div, label, button {
     font-weight: 400;
 }
 
+.label {
+    font-weight: bold;
+}
+
 .strike-through {
     text-decoration: line-through;
     text-decoration-thickness: 3px;

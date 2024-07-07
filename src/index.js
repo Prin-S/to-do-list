@@ -12,9 +12,9 @@ function addItem(item) {
 }
 
 // Demo data
-const hobbit = createItem('The Hobbit', 'J.R.R. Tolkien', 310, 'Medium', 'Default 1');
-const lotr = createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', 1077, 'High', 'Default 1');
-const silmarillion = createItem('The Silmarillion', 'J.R.R. Tolkien', 365, 'Low', 'Default 2');
+const hobbit = createItem('The Hobbit', 'J.R.R. Tolkien', '2024-07-02', 'Medium', 'Default 1');
+const lotr = createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', '2024-07-03', 'High', 'Default 1');
+const silmarillion = createItem('The Silmarillion', 'J.R.R. Tolkien', '2024-07-04', 'Low', 'Default 2');
 
 addItem(hobbit);
 addItem(lotr);
@@ -32,6 +32,9 @@ const content = document.querySelector('#content');
 function showOneItem(element, index) {
     const box = document.createElement('div');
     box.setAttribute('id', `box${index}`);
+    
+    const itemSummary = document.createElement('div');
+    itemSummary.innerHTML = `<strong>Task:</strong> ${element.getTitle()} || <strong>Due Date:</strong> ${element.getDueDate()}`;
 
     if (element.getPriority() == 'High') {
         box.setAttribute('class', 'box box-bg-high');
@@ -41,81 +44,37 @@ function showOneItem(element, index) {
         box.setAttribute('class', 'box box-bg-low');
     }
 
-    const itemSummary = document.createElement('div');
-    itemSummary.innerHTML = `${element.getTitle()} || Due: ${element.getDueDate()}`;
-
-    const itemTitle = document.createElement('div');
-    itemTitle.innerHTML = `<strong>Title:</strong> ${element.getTitle()}`;
-
-    const itemDetails = document.createElement('div');
-    itemDetails.innerHTML = `<strong>Details:</strong> ${element.getDetails()}`;
-
-    const itemDueDate = document.createElement('div');
-    itemDueDate.innerHTML = `<strong>Due Date:</strong> ${element.getDueDate()}`;
-
-    const itemPriority = document.createElement('div');
-    itemPriority.innerHTML = `<strong>Priority:</strong> ${element.getPriority()}`;
-
-    const itemProject = document.createElement('div');
-    itemProject.innerHTML = `<strong>Project:</strong> ${element.getProject()}`;
-
-    const itemChecklist = document.createElement('div');
-
     if (element.getChecklist()) {
-        itemChecklist.innerHTML = '<strong>Status:</strong> Done';
         itemSummary.setAttribute('class', 'strike-through');
-    } else {
-        itemChecklist.innerHTML = '<strong>Status:</strong> Not done';
     }
-
-    /*const expandButton = document.createElement('button');
-    expandButton.setAttribute('class', 'box-button');
-    expandButton.innerHTML = 'Expand';
-    expandButton.addEventListener('click', () => itemFullDetails.showModal());*/
-
-    const itemFullDetails = document.createElement('dialog');
-    itemFullDetails.setAttribute('id', 'item-full-details-dialog');
-
-    const closeFullDetails = document.createElement('button');
-    closeFullDetails.setAttribute('class', 'dialog-button');
-    closeFullDetails.innerHTML = 'Close';
-    closeFullDetails.addEventListener('click', () => itemFullDetails.close());
 
     const selections = document.createElement('div');
     selections.setAttribute('class', 'selections');
     selections.appendChild(createDoneButton(element, index));
     selections.appendChild(createRemoveButton(index));
     selections.appendChild(createExpandButton(element, index));
+    selections.appendChild(createEditButton(element, index));
 
     box.appendChild(itemSummary);
     box.appendChild(selections);
-
-    itemFullDetails.appendChild(itemTitle);
-    itemFullDetails.appendChild(itemDueDate);
-    itemFullDetails.appendChild(itemDetails);
-    itemFullDetails.appendChild(itemPriority);
-    itemFullDetails.appendChild(itemProject);
-    itemFullDetails.appendChild(itemChecklist);
-    itemFullDetails.appendChild(closeFullDetails);
-
-    content.appendChild(itemFullDetails);
 
     return box; // Return to function in showAllItems()
 }
 
 function createDoneButton(element, index) {
     const returnSelection = document.createElement('span');
-    const itemDone = document.createElement('input');
-    const itemDoneLabel = document.createElement('label');
     
+    const itemDone = document.createElement('input');
+    itemDone.setAttribute('id', `done${index}`);
     itemDone.setAttribute('type', 'checkbox');
-    itemDone.setAttribute('id', 'done');
-    itemDone.setAttribute('name', index);
+    itemDone.setAttribute('name', `done${index}`);
     itemDone.addEventListener('click', toggleDone.bind(this, index));
-    itemDoneLabel.setAttribute('for', 'done');
+    
+    const itemDoneLabel = document.createElement('label');
+    itemDoneLabel.setAttribute('for', `done${index}`);
     itemDoneLabel.innerHTML = 'Done?';
 
-    if (allToDos[index].getChecklist() == true) {
+    if (allToDos[index].getChecklist()) {
         itemDone.setAttribute('checked', 'true');
     }   
 
@@ -151,7 +110,7 @@ function createExpandButton(element, index) {
     
     expandButton.setAttribute('id', `expand${index}`);
     expandButton.setAttribute('class', 'box-button');
-    expandButton.innerHTML = 'Expand';
+    expandButton.innerHTML = 'More';
     expandButton.addEventListener('click', expandItem.bind(this, element, index));
 
     return expandButton; // Return to function in showOneItem(element, index)
@@ -162,20 +121,208 @@ function expandItem(element, index) {
     const expandedExpandButton = document.querySelector(`#expand${index}`);
 
     const itemDetails = document.createElement('div');
-    itemDetails.setAttribute('id', `details${index}`);
     itemDetails.innerHTML = `<strong>Details:</strong> ${element.getDetails()}`;
 
-    if (expandedExpandButton.innerHTML == 'Expand') {
-        expandedExpandButton.innerHTML = 'Shrink';
-        expandedBox.appendChild(itemDetails);
+    const itemPriority = document.createElement('div');
+    itemPriority.innerHTML = `<strong>Priority:</strong> ${element.getPriority()}`;
+
+    const itemProject = document.createElement('div');
+    itemProject.innerHTML = `<strong>Project:</strong> ${element.getProject()}`;
+
+    const itemChecklist = document.createElement('div');
+
+    if (element.getChecklist()) {
+        itemChecklist.innerHTML = '<strong>Status:</strong> Done';
     } else {
-        expandedExpandButton.innerHTML = 'Expand';
+        itemChecklist.innerHTML = '<strong>Status:</strong> Not done';
+    }
+
+    if (expandedExpandButton.innerHTML == 'More') {
+        expandedExpandButton.innerHTML = 'Less';
+        expandedBox.appendChild(itemDetails);
+        expandedBox.appendChild(itemPriority);
+        expandedBox.appendChild(itemProject);
+        expandedBox.appendChild(itemChecklist);
+    } else {
+        expandedExpandButton.innerHTML = 'More';
+        expandedBox.removeChild(expandedBox.lastElementChild);
+        expandedBox.removeChild(expandedBox.lastElementChild);
+        expandedBox.removeChild(expandedBox.lastElementChild);
         expandedBox.removeChild(expandedBox.lastElementChild);
     }
+}
+
+function createEditButton(element, index) {
+    const editButton = document.createElement('button');
+
+    editButton.setAttribute('id', `expand${index}`);
+    editButton.setAttribute('class', 'box-button');
+    editButton.innerHTML = 'Edit';
+    editButton.addEventListener('click', editItem.bind(this, element, index));
+
+    return editButton; // Return to function in showOneItem(element, index)
+}
+
+function editItem(element, index) {
+    const lineBreak = document.createElement('br');
+
+    const itemTitleLabel = document.createElement('label');
+    itemTitleLabel.setAttribute('class', 'label');
+    itemTitleLabel.setAttribute('for', `title${index}`);
+    itemTitleLabel.innerHTML = 'Task: ';
+
+    const itemTitle = document.createElement('input');
+    itemTitle.setAttribute('id', `title${index}`);
+    itemTitle.setAttribute('type', 'text');
+    itemTitle.setAttribute('name', `title${index}`);
+    itemTitle.setAttribute('required', '');
+    itemTitle.setAttribute('value', element.getTitle());
     
+    const itemDetailsLabel = document.createElement('label');
+    itemDetailsLabel.setAttribute('class', 'label');
+    itemDetailsLabel.setAttribute('for', `details${index}`);
+    itemDetailsLabel.innerHTML = 'Details: ';
 
+    const itemDetails = document.createElement('input');
+    itemDetails.setAttribute('id', `details${index}`);
+    itemDetails.setAttribute('type', 'text');
+    itemDetails.setAttribute('name', `details${index}`);
+    itemDetails.setAttribute('required', '');
+    itemDetails.setAttribute('value', element.getDetails());
 
+    const itemDueDateLabel = document.createElement('label');
+    itemDueDateLabel.setAttribute('class', 'label');
+    itemDueDateLabel.setAttribute('for', `due-date${index}`);
+    itemDueDateLabel.innerHTML = 'Due Date: ';
 
+    const itemDueDate = document.createElement('input');
+    itemDueDate.setAttribute('id', `due-date${index}`);
+    itemDueDate.setAttribute('type', 'date');
+    itemDueDate.setAttribute('name', `due-date${index}`);
+    itemDueDate.setAttribute('required', '');
+    itemDueDate.setAttribute('value', element.getDueDate());
+
+    const itemPriorityLabel = document.createElement('label');
+    itemPriorityLabel.setAttribute('class', 'label');
+    itemPriorityLabel.innerHTML = 'Priority: ';
+
+    const itemPriorityHigh = document.createElement('input');
+    const itemPriorityHighLabel = document.createElement('label');
+
+    itemPriorityHigh.setAttribute('id', 'high');
+    itemPriorityHigh.setAttribute('type', 'radio');
+    itemPriorityHigh.setAttribute('name', `priority${index}`);
+    itemPriorityHigh.setAttribute('required', '');
+    itemPriorityHigh.setAttribute('value', 'High');
+
+    itemPriorityHighLabel.setAttribute('for', 'high');
+    itemPriorityHighLabel.innerHTML = 'High';
+    
+    const itemPriorityMedium = document.createElement('input');
+    const itemPriorityMediumLabel = document.createElement('label');
+
+    itemPriorityMedium.setAttribute('id', 'medium');
+    itemPriorityMedium.setAttribute('type', 'radio');
+    itemPriorityMedium.setAttribute('name', `priority${index}`);
+    itemPriorityMedium.setAttribute('value', 'Medium');
+
+    itemPriorityMediumLabel.setAttribute('for', 'medium');
+    itemPriorityMediumLabel.innerHTML = 'Medium';
+
+    const itemPriorityLow = document.createElement('input');
+    const itemPriorityLowLabel = document.createElement('label');
+
+    itemPriorityLow.setAttribute('id', 'low');
+    itemPriorityLow.setAttribute('type', 'radio');
+    itemPriorityLow.setAttribute('name', `priority${index}`);
+    itemPriorityLow.setAttribute('value', 'Low');
+
+    itemPriorityLowLabel.setAttribute('for', 'low');
+    itemPriorityLowLabel.innerHTML = 'Low';
+
+    const itemPriority = document.createElement('div');
+    itemPriority.appendChild(itemPriorityLabel);
+    itemPriority.appendChild(itemPriorityHigh);
+    itemPriority.appendChild(itemPriorityHighLabel);
+    itemPriority.appendChild(itemPriorityMedium);
+    itemPriority.appendChild(itemPriorityMediumLabel);
+    itemPriority.appendChild(itemPriorityLow);
+    itemPriority.appendChild(itemPriorityLowLabel);
+
+    if (element.getPriority() == 'High') {
+        itemPriorityHigh.setAttribute('checked', '');
+    } else if (element.getPriority() == 'Medium') {
+        itemPriorityMedium.setAttribute('checked', '');
+    } else {
+        itemPriorityLow.setAttribute('checked', '');
+    }
+
+    const itemProjectLabel = document.createElement('label');
+    itemProjectLabel.setAttribute('class', 'label');
+    itemProjectLabel.innerHTML = 'Project: ';
+
+    const itemProject = document.createElement('div');
+    itemProject.appendChild(itemProjectLabel);
+    addProjectsToForm(itemProject, element, index);
+
+    const editItemDetailsDialog = document.createElement('dialog');
+    editItemDetailsDialog.setAttribute('id', 'edit-item-details-dialog');
+
+    const editItemDetailsForm = document.createElement('form');
+    editItemDetailsForm.setAttribute('id', 'edit-item-details-form');
+
+    const submitEditItemDetails = document.createElement('button');
+    submitEditItemDetails.setAttribute('class', 'dialog-button');
+    submitEditItemDetails.setAttribute('type', 'submit');
+    submitEditItemDetails.innerHTML = 'Submit';
+    editItemDetailsForm.addEventListener('submit', submitEditItemDetailsForm);
+
+    function submitEditItemDetailsForm() {
+        const editedItemTitle = document.querySelector(`#title${index}`);
+        const editedItemDetails = document.querySelector(`#details${index}`);
+        const editedItemDueDate = document.querySelector(`#due-date${index}`);
+        const editedItemPriority = document.querySelector(`input[name=priority${index}]:checked`);
+        const editedItemProject = document.querySelector(`input[name=project${index}]:checked`);
+
+        element.setTitle(editedItemTitle.value);
+        element.setDetails(editedItemDetails.value);
+        element.setDueDate(editedItemDueDate.value);
+        element.setPriority(editedItemPriority.value);
+        element.setProject(editedItemProject.value);
+
+        showAllItems(currentProject);
+        editItemDetailsDialog.close();
+    }
+
+    const resetEditItemDetails = document.createElement('button');
+    resetEditItemDetails.setAttribute('class', 'dialog-button');
+    resetEditItemDetails.setAttribute('type', 'reset');
+    resetEditItemDetails.innerHTML = 'Reset';
+
+    const closeEditItemDetails = document.createElement('button');
+    closeEditItemDetails.setAttribute('class', 'dialog-button');
+    closeEditItemDetails.innerHTML = 'Close';
+    closeEditItemDetails.addEventListener('click', () => editItemDetailsDialog.close());
+
+    editItemDetailsForm.appendChild(itemTitleLabel);
+    editItemDetailsForm.appendChild(itemTitle);
+    editItemDetailsForm.appendChild(lineBreak);
+    editItemDetailsForm.appendChild(itemDetailsLabel);
+    editItemDetailsForm.appendChild(itemDetails);
+    editItemDetailsForm.appendChild(lineBreak.cloneNode());
+    editItemDetailsForm.appendChild(itemDueDateLabel);
+    editItemDetailsForm.appendChild(itemDueDate);
+    editItemDetailsForm.appendChild(lineBreak.cloneNode());
+    editItemDetailsForm.appendChild(itemPriority);
+    editItemDetailsForm.appendChild(itemProject);
+    editItemDetailsForm.appendChild(submitEditItemDetails);
+    editItemDetailsForm.appendChild(resetEditItemDetails);
+    editItemDetailsForm.appendChild(closeEditItemDetails);
+
+    editItemDetailsDialog.appendChild(editItemDetailsForm);
+    content.appendChild(editItemDetailsDialog);
+
+    editItemDetailsDialog.showModal();
 }
 
 const itemDialog = document.querySelector('#new-item-dialog');
@@ -211,26 +358,35 @@ showAll.addEventListener('click', showAllItems.bind(this, false));
 
 const itemProjects = document.querySelector('#item-projects');
 
-function addProjectsToForm() {
+function addProjectsToForm(form, selected = false, elementID = false) {
+    console.log(projects);
     projects.forEach((element, index) => {
         const projectChoice = document.createElement('input');
         const projectLabel = document.createElement('label');
 
-        projectChoice.setAttribute('type', 'radio');
         projectChoice.setAttribute('id', index);
+        projectChoice.setAttribute('type', 'radio');
         projectChoice.setAttribute('name', 'project');
+        projectChoice.setAttribute('required', '');
         projectChoice.setAttribute('value', element.getTitle());
-        projectChoice.setAttribute('required', 'true');
 
         projectLabel.setAttribute('for', index);
         projectLabel.innerHTML = element.getTitle();
         
-        itemProjects.appendChild(projectChoice);
-        itemProjects.appendChild(projectLabel);
+        form.appendChild(projectChoice);
+        form.appendChild(projectLabel);
+
+        if (selected) {
+            projectChoice.setAttribute('name', `project${elementID}`);
+
+            if (selected.getProject() == element.getTitle()) {
+                projectChoice.setAttribute('checked', '');
+            }
+        }
     });
 }
 
-addProjectsToForm();
+addProjectsToForm(itemProjects);
 
 const projectDialog = document.querySelector('#new-project-dialog');
 const newProjectButton = document.querySelector('#new-project');
@@ -248,7 +404,7 @@ function submitProjectForm(event) {
     projectDialog.close();
     nav.appendChild(showOneProject(projects[projects.length - 1], projects.length - 1)); // showOneProject(element, index) - Access latest item in projects array and append it to #content in the DOM.
     itemProjects.innerHTML = 'Project:';
-    addProjectsToForm();
+    addProjectsToForm(itemProjects);
     event.preventDefault();
 }
 

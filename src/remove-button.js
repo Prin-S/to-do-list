@@ -1,8 +1,7 @@
-import { allToDos, currentProject, showAllItems } from './index.js';
+import { allToDos, currentProject, showAllItems } from './item-functions.js';
 
 function createRemoveButton(index) {
     const removeButton = document.createElement('button');
-
     removeButton.setAttribute('id', index);
     removeButton.setAttribute('class', 'box-button');
     removeButton.innerHTML = 'Delete';

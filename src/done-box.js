@@ -1,4 +1,4 @@
-import { allToDos, currentProject, showAllItems } from './index.js';
+import { allToDos, currentProject, showAllItems } from './item-functions.js';
 
 function createDoneBox(index) {
     const returnSelection = document.createElement('span');

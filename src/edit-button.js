@@ -1,8 +1,8 @@
-import { addProjectsToForm, currentProject, showAllItems } from './index.js';
+import { currentProject, content, showAllItems } from './item-functions.js';
+import { addProjectsToForm } from './project-functions.js';
 
 function createEditButton(element, index) {
     const editButton = document.createElement('button');
-
     editButton.setAttribute('id', `expand${index}`);
     editButton.setAttribute('class', 'box-button');
     editButton.innerHTML = 'Edit';
@@ -20,12 +20,12 @@ function editItem(element, index) {
 
     const editItemDetailsForm = document.createElement('form');
     editItemDetailsForm.setAttribute('id', 'edit-item-details-form');
+    editItemDetailsForm.addEventListener('submit', submitEditItemDetailsForm);
 
     const submitEditItemDetails = document.createElement('button');
     submitEditItemDetails.setAttribute('class', 'dialog-button');
     submitEditItemDetails.setAttribute('type', 'submit');
     submitEditItemDetails.innerHTML = 'Submit';
-    editItemDetailsForm.addEventListener('submit', submitEditItemDetailsForm);
 
     function submitEditItemDetailsForm() {
         const editedItemTitle = document.querySelector(`#title${index}`);

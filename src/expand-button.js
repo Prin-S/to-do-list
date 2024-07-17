@@ -1,6 +1,5 @@
 function createExpandButton(element, index) {
     const expandButton = document.createElement('button');
-    
     expandButton.setAttribute('id', `expand${index}`);
     expandButton.setAttribute('class', 'box-button');
     expandButton.innerHTML = 'More';

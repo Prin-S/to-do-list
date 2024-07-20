@@ -8,11 +8,11 @@ const allToDos = [];
 let currentProject = false;
 const content = document.querySelector('#content');
 
-function addItem(item) {
+function addItem(item) { // Add an item to the allToDos array.
     allToDos.push(item);
 }
 
-function showAllItems(selectedProject = false) {
+function showAllItems(selectedProject = false) { // Show all items in the allToDos array.
     content.innerHTML = '';
 
     allToDos.forEach((element, index) => {
@@ -22,13 +22,13 @@ function showAllItems(selectedProject = false) {
         } else { // If a project button is clicked, show items under that project only.
             currentProject = selectedProject;
             if (element.getProject() == selectedProject) { // If item's project is the same as that of the clicked button,
-                content.appendChild(showOneItem(element, index)); // Add to content
+                content.appendChild(showOneItem(element, index)); // Add it to #content.
             }
         }
     });
 }
 
-function showOneItem(element, index) {
+function showOneItem(element, index) { // Create an entry for each item.
     const box = document.createElement('div');
     box.setAttribute('id', `box${index}`);
     
@@ -62,13 +62,13 @@ function showOneItem(element, index) {
 
 const itemDialog = document.querySelector('#new-item-dialog');
 
-const newItemButton = document.querySelector('#new-item');
+const newItemButton = document.querySelector('#new-item-button');
 newItemButton.addEventListener('click', () => itemDialog.showModal());
 
 const itemForm = document.querySelector('#item-form');
 itemForm.addEventListener('submit', submitItemForm);
 
-const closeItemButton = document.querySelector('#item-close');
+const closeItemButton = document.querySelector('#new-item-close-button');
 closeItemButton.addEventListener('click', () => itemDialog.close());
 
 function submitItemForm(event) {
@@ -78,9 +78,9 @@ function submitItemForm(event) {
     const itemPriority = document.querySelector('input[name=priority]:checked');
     const itemProject = document.querySelector('input[name=project]:checked');
 
-    addItem(createItem(itemTitle.value, itemDetails.value, itemDueDate.value, itemPriority.value, itemProject.value)); // Create object and add to the allToDos array.
+    addItem(createItem(itemTitle.value, itemDetails.value, itemDueDate.value, itemPriority.value, itemProject.value)); // Create an object and add to the allToDos array.
     itemDialog.close();
-    content.appendChild(showOneItem(allToDos[allToDos.length - 1], allToDos.length - 1)); // showOneItem(element, index) - Access latest item in the allToDos array and append it to #content in the DOM.
+    content.appendChild(showOneItem(allToDos[allToDos.length - 1], allToDos.length - 1)); // showOneItem(element, index) - Access latest item in the allToDos array and append it to #content.
     
     event.preventDefault();
 }

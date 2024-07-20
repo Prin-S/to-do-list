@@ -18,7 +18,7 @@ function createItem(title, details, dueDate, priority, project) {
 }
 
 function switchChecklist(checklist) {
-    if (checklist == false) {
+    if (!checklist) {
         return true;
     }
     

@@ -20,12 +20,7 @@ function editItem(element, index) {
 
     const editItemDetailsForm = document.createElement('form');
     editItemDetailsForm.setAttribute('id', 'edit-item-details-form');
-    editItemDetailsForm.addEventListener('submit', submitEditItemDetailsForm);
-
-    const submitEditItemDetails = document.createElement('button');
-    submitEditItemDetails.setAttribute('class', 'dialog-button');
-    submitEditItemDetails.setAttribute('type', 'submit');
-    submitEditItemDetails.innerHTML = 'Submit';
+    editItemDetailsForm.addEventListener('submit', submitEditItemDetailsForm); // When the Submit button in the edit item form is clicked
 
     function submitEditItemDetailsForm() {
         const editedItemTitle = document.querySelector(`#title${index}`);
@@ -44,6 +39,11 @@ function editItem(element, index) {
         editItemDetailsDialog.close();
     }
 
+    const submitEditItemDetails = document.createElement('button');
+    submitEditItemDetails.setAttribute('class', 'dialog-button');
+    submitEditItemDetails.setAttribute('type', 'submit');
+    submitEditItemDetails.innerHTML = 'Submit';
+
     const resetEditItemDetails = document.createElement('button');
     resetEditItemDetails.setAttribute('class', 'dialog-button');
     resetEditItemDetails.setAttribute('type', 'reset');
@@ -52,7 +52,10 @@ function editItem(element, index) {
     const closeEditItemDetails = document.createElement('button');
     closeEditItemDetails.setAttribute('class', 'dialog-button');
     closeEditItemDetails.innerHTML = 'Close';
-    closeEditItemDetails.addEventListener('click', () => editItemDetailsDialog.close());
+    closeEditItemDetails.addEventListener('click', () => {
+        editItemDetailsForm.reset(); // Reset the form before closing so that nothing is saved.
+        editItemDetailsDialog.close();
+    });
 
     const lineBreak = document.createElement('br');
 
@@ -139,7 +142,7 @@ function editItem(element, index) {
     itemPriority.appendChild(itemPriorityLow);
     itemPriority.appendChild(itemPriorityLowLabel);
 
-    if (element.getPriority() == 'High') {
+    if (element.getPriority() == 'High') { // Check the priority box depending on task priority
         itemPriorityHigh.setAttribute('checked', '');
     } else if (element.getPriority() == 'Medium') {
         itemPriorityMedium.setAttribute('checked', '');
@@ -153,7 +156,7 @@ function editItem(element, index) {
 
     const itemProject = document.createElement('div');
     itemProject.appendChild(itemProjectLabel);
-    addProjectsToForm(itemProject, element, index);
+    addProjectsToForm(itemProject, element, index); // Populate the project list and check the box of the project that the edited item belongs to.
 
     editItemDetailsForm.appendChild(itemTitleLabel);
     editItemDetailsForm.appendChild(itemTitle);

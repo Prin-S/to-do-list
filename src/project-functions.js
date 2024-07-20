@@ -4,17 +4,17 @@ import { showAllItems } from './item-functions.js';
 const allProjects = [];
 const nav = document.querySelector('nav');
 
-const showAll = document.querySelector('#show-all');
+const showAll = document.querySelector('#show-all'); // The Show All button for showing all projects
 showAll.addEventListener('click', showAllItems.bind(this, false));
 
-const itemProjects = document.querySelector('#item-projects');
+const itemProjects = document.querySelector('#item-projects'); // The project list in the Add To-Do Item form
 
 function addProject(item) { // Add a project to the allProjects array.
     allProjects.push(item);
 }
 
 function showAllProjects() { // Show all projects in the allProjects array.
-    allProjects.forEach((element, index) => nav.appendChild(showOneProject(element, index))); // Attach to the nav element in index.html.
+    allProjects.forEach((element, index) => nav.appendChild(showOneProject(element, index))); // Attach to the nav element.
 }
 
 function showOneProject(element, index) { // Create a button for each project.
@@ -26,7 +26,7 @@ function showOneProject(element, index) { // Create a button for each project.
     return button; // Return to calling function -> showAllProjects()
 }
 
-function addProjectsToForm(form, selected = false, elementID = false) { // Add each project to the #item-projects div in index.html.
+function addProjectsToForm(form, selectedElement = false, selectedIndex = false) { // Add each project in the allProjects array to the #item-projects div.
     // This is shown when the Add To-Do Item button is clicked.
     allProjects.forEach((element, index) => {
         const projectChoice = document.createElement('input');
@@ -43,11 +43,11 @@ function addProjectsToForm(form, selected = false, elementID = false) { // Add e
         form.appendChild(projectChoice);
         form.appendChild(projectLabel);
 
-        if (selected) { // When the function is called in editItem(element, index), element and index are passed in.
-            projectChoice.setAttribute('name', `project${elementID}`); // elementID is the element of the project being edited.
+        if (selectedElement) { // When the function is called in editItem(element, index), the edited item's element and index are passed in.
+            projectChoice.setAttribute('name', `project${selectedIndex}`); // selectedIndex is the index of the edited item.
 
-            if (selected.getProject() == element.getTitle()) {
-                projectChoice.setAttribute('checked', ''); // Check the selected box.
+            if (selectedElement.getProject() == element.getTitle()) {
+                projectChoice.setAttribute('checked', ''); // Check the box of the project that the edited item belongs to.
             }
         }
     });
@@ -55,24 +55,24 @@ function addProjectsToForm(form, selected = false, elementID = false) { // Add e
 
 const projectDialog = document.querySelector('#new-project-dialog');
 
-const newProjectButton = document.querySelector('#new-project');
+const newProjectButton = document.querySelector('#new-project-button');
 newProjectButton.addEventListener('click', () => projectDialog.showModal());
 
 const projectForm = document.querySelector('#project-form');
 projectForm.addEventListener('submit', submitProjectForm);
 
-const closeProjectButton = document.querySelector('#project-close');
+const closeProjectButton = document.querySelector('#new-project-close-button');
 closeProjectButton.addEventListener('click', () => projectDialog.close());
 
 function submitProjectForm(event) {
     const projectTitle = document.querySelector('#project-title');
 
-    addProject(createProject(projectTitle.value)); // Create object and add to the allProjects array.
+    addProject(createProject(projectTitle.value)); // Create an object and add to the allProjects array.
     projectDialog.close();
-    nav.appendChild(showOneProject(allProjects[allProjects.length - 1], allProjects.length - 1)); // showOneProject(element, index) - Access latest item in the allProjects array and append it to #content in the DOM.
+    nav.appendChild(showOneProject(allProjects[allProjects.length - 1], allProjects.length - 1)); // showOneProject(element, index) - Access latest item in the allProjects array and append it to #content.
     
-    itemProjects.innerHTML = 'Project:';
-    addProjectsToForm(itemProjects);
+    itemProjects.innerHTML = 'Project:'; // Clear the project list in the Add To-Do Item form.
+    addProjectsToForm(itemProjects); // Repopulate the project list so that the newly added project is included too.
     
     event.preventDefault();
 }

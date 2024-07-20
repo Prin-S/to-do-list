@@ -24,7 +24,7 @@ function createDoneBox(index) {
 }
 
 function toggleDone(index) {
-    allToDos[index].setChecklist();
+    allToDos[index].setChecklist(); // Toggle the Done? box for the item at index.
     showAllItems(currentProject);
 }
 

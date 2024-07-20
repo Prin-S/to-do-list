@@ -38,7 +38,7 @@ function expandItem(element, index) {
     } else {
         expandedExpandButton.innerHTML = 'More';
         for (let i = 0; i < 4; i++) {
-            expandedBox.removeChild(expandedBox.lastElementChild);
+            expandedBox.removeChild(expandedBox.lastElementChild); // Remove the elements that appear after clicking on the More button.
         }
     }
 }

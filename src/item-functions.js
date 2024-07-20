@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { createDoneBox } from './done-box.js';
 import { createRemoveButton } from './remove-button.js';
 import { createExpandButton } from './expand-button.js';
@@ -33,7 +34,7 @@ function showOneItem(element, index) { // Create an entry for each item.
     box.setAttribute('id', `box${index}`);
     
     const itemSummary = document.createElement('div');
-    itemSummary.innerHTML = `<strong>Task:</strong> ${element.getTitle()} || <strong>Due Date:</strong> ${element.getDueDate()}`;
+    itemSummary.innerHTML = `<strong>Task:</strong> ${element.getTitle()} || <strong>Due Date:</strong> ${format(element.getDueDate(), 'd MMMM yyyy')}`;
 
     if (element.getPriority() == 'High') { // Background color depending on task priority
         box.setAttribute('class', 'box box-bg-high');

@@ -6,7 +6,7 @@ import { createEditButton } from './edit-button.js';
 import { createItem } from './item.js';
 
 const allToDos = [];
-let currentProject = false;
+let currentProject = false; // The selected project
 const content = document.querySelector('#content');
 
 function addItem(item) { // Add an item to the allToDos array.

@@ -14,7 +14,7 @@ function createItem(title, details, dueDate, priority, project) {
     const getChecklist = () => checklist;
     const setChecklist = () => checklist = switchChecklist(checklist);
 
-    return { getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist }
+    return { getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist };
 }
 
 function switchChecklist(checklist) {

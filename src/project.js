@@ -1,8 +1,15 @@
+let projectIDCount = localStorage.length;
+const getProjectIDCount = () => projectIDCount;
+const resetProjectIDCount = () => projectIDCount = 0;
+
 function createProject(title) {
+    const projectID = projectIDCount;
+    projectIDCount++;
+    
     const getTitle = () => title;
     const setTitle = newTitle => title = newTitle;
 
-    return { getTitle, setTitle }
+    return { projectID, getTitle, setTitle };
 }
 
-export { createProject };
+export { getProjectIDCount, resetProjectIDCount, createProject };

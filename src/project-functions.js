@@ -1,4 +1,4 @@
-import { createProject } from './project.js';
+import { getProjectIDCount, createProject } from './project.js';
 import { showAllItems } from './item-functions.js';
 
 const allProjects = [];
@@ -9,11 +9,26 @@ showAll.addEventListener('click', showAllItems.bind(this, false));
 
 const itemProjects = document.querySelector('#item-projects'); // The project list in the Add To-Do Item form
 
-function addProject(item) { // Add a project to the allProjects array.
-    allProjects.push(item);
+function retrieveProjectsFromStorage() { // Called in index.js
+    for (let i = 0; i <= getProjectIDCount(); i++) { // projectIDCount is in project.js.
+        if (localStorage.getItem(`project${i}`)) {
+            let fromStorage = localStorage.getItem(`project${i}`);
+            let parsedTitle = JSON.parse(fromStorage).title;
+            addProject(createProject(parsedTitle), false); // Add the project to the allProjects array, but don't add it to localStorage.
+        }
+    }
 }
 
-function showAllProjects() { // Show all projects in the allProjects array.
+function addProject(item, newProject = true) { // Add a project to the allProjects array.
+    allProjects.push(item);
+    
+    if (newProject) { // Only add new projects to localStorage (newProject must be true).
+        let itemToJSON = JSON.stringify({ projectID: item['projectID'], title: item.getTitle() })
+        localStorage.setItem(`project${item.projectID}`, itemToJSON);
+    }
+}
+
+function showAllProjects() { // Show all projects in the allProjects array. / Called in index.js
     allProjects.forEach((element, index) => nav.appendChild(showOneProject(element, index))); // Attach to the nav element.
 }
 
@@ -77,4 +92,4 @@ function submitProjectForm(event) {
     event.preventDefault();
 }
 
-export { itemProjects, addProject, showAllProjects, addProjectsToForm };
+export { itemProjects, retrieveProjectsFromStorage, addProject, showAllProjects, addProjectsToForm };

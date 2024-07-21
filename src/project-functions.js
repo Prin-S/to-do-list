@@ -12,8 +12,9 @@ const itemProjects = document.querySelector('#item-projects'); // The project li
 function retrieveProjectsFromStorage() { // Called in index.js
     for (let i = 0; i <= getProjectIDCount(); i++) { // getProjectIDCount() is in project.js.
         if (localStorage.getItem(`project${i}`)) {
-            let fromStorage = localStorage.getItem(`project${i}`);
-            let parsedTitle = JSON.parse(fromStorage).title;
+            const fromStorage = localStorage.getItem(`project${i}`);
+            const parsedTitle = JSON.parse(fromStorage).title;
+
             addProject(createProject(parsedTitle), false); // Add the project to the allProjects array, but don't add it to localStorage.
         }
     }
@@ -23,7 +24,8 @@ function addProject(item, newProject = true) { // Add a project to the allProjec
     allProjects.push(item);
     
     if (newProject) { // Only add new projects to localStorage (newProject must be true).
-        let projectToJSON = JSON.stringify({ projectID: item['projectID'], title: item.getTitle() });
+        const projectToJSON = JSON.stringify({ projectID: item.projectID, title: item.getTitle() });
+
         localStorage.setItem(`project${item.projectID}`, projectToJSON);
     }
 }

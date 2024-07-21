@@ -35,6 +35,18 @@ function editItem(element, index) {
         element.setPriority(editedItemPriority.value);
         element.setProject(editedItemProject.value);
 
+        let editedToJSON = JSON.stringify({
+            itemID: element.itemID,
+            title: element.getTitle(),
+            details: element.getDetails(),
+            dueDate: element.getDueDate(),
+            priority: element.getPriority(),
+            project: element.getProject(),
+            checklist: element.getChecklist()
+        });
+    
+        localStorage.setItem(`item${element.itemID}`, editedToJSON); // Update the item in localStorage.
+
         showAllItems(currentProject);
         editItemDetailsDialog.close();
     }

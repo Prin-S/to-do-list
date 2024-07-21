@@ -1,4 +1,4 @@
-let projectIDCount = localStorage.length;
+let projectIDCount = 0;
 const getProjectIDCount = () => projectIDCount;
 const resetProjectIDCount = () => projectIDCount = 0;
 

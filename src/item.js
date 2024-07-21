@@ -1,4 +1,11 @@
+let itemIDCount = 0;
+const getItemIDCount = () => itemIDCount;
+const resetItemIDCount = () => itemIDCount = 0;
+
 function createItem(title, details, dueDate, priority, project) {
+    const itemID = itemIDCount;
+    itemIDCount++;
+
     const getTitle = () => title;
     const setTitle = newTitle => title = newTitle;
     const getDetails = () => details;
@@ -14,7 +21,7 @@ function createItem(title, details, dueDate, priority, project) {
     const getChecklist = () => checklist;
     const setChecklist = () => checklist = switchChecklist(checklist);
 
-    return { getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist };
+    return { itemID, getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist };
 }
 
 function switchChecklist(checklist) {
@@ -25,4 +32,4 @@ function switchChecklist(checklist) {
     return false;
 }
 
-export { createItem };
+export { getItemIDCount, resetItemIDCount, createItem };

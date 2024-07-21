@@ -3,14 +3,40 @@ import { createDoneBox } from './done-box.js';
 import { createRemoveButton } from './remove-button.js';
 import { createExpandButton } from './expand-button.js';
 import { createEditButton } from './edit-button.js';
-import { createItem } from './item.js';
+import { getItemIDCount, createItem } from './item.js';
 
 const allToDos = [];
 let currentProject = false; // The selected project
 const content = document.querySelector('#content');
 
-function addItem(item) { // Add an item to the allToDos array.
+function retrieveItemsFromStorage() { // Called in index.js
+    for (let i = 0; i <= getItemIDCount(); i++) { // getItemIDCount() is in item.js.
+        if (localStorage.getItem(`item${i}`)) {
+            let fromStorage = localStorage.getItem(`item${i}`);
+            let parsedTitle = JSON.parse(fromStorage).title;
+            let parsedDetails = JSON.parse(fromStorage).details;
+            let parsedDueDate = JSON.parse(fromStorage).dueDate;
+            let parsedPriority = JSON.parse(fromStorage).priority;
+            let parsedProject = JSON.parse(fromStorage).project;
+            addItem(createItem(parsedTitle, parsedDetails, parsedDueDate, parsedPriority, parsedProject), false); // Add the item to the allToDos array, but don't add it to localStorage.
+        }
+    }
+}
+
+function addItem(item, newItem = true) { // Add an item to the allToDos array.
     allToDos.push(item);
+
+    if (newItem) { // Only add new items to localStorage (newItem must be true).
+        let itemToJSON = JSON.stringify({
+            itemID: item['itemID'],
+            title: item.getTitle(),
+            details: item.getDetails(),
+            dueDate: item.getDueDate(),
+            priority: item.getPriority(),
+            project: item.getProject()
+        });
+        localStorage.setItem(`item${item.itemID}`, itemToJSON);
+    }
 }
 
 function showAllItems(selectedProject = false) { // Show all items in the allToDos array.
@@ -86,4 +112,4 @@ function submitItemForm(event) {
     event.preventDefault();
 }
 
-export { allToDos, currentProject, content, addItem, showAllItems };
+export { allToDos, currentProject, content, retrieveItemsFromStorage, addItem, showAllItems };

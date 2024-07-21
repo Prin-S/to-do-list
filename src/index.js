@@ -1,26 +1,28 @@
 import './styles.css';
-import { createItem } from './item.js';
+import { getItemIDCount, resetItemIDCount, createItem } from './item.js';
 import { getProjectIDCount, resetProjectIDCount, createProject } from './project.js';
-import { addItem, showAllItems } from './item-functions.js';
+import { retrieveItemsFromStorage, addItem, showAllItems } from './item-functions.js';
 import { itemProjects, retrieveProjectsFromStorage, addProject, showAllProjects, addProjectsToForm } from './project-functions.js';
 
-// Demo data
-addItem(createItem('The Hobbit', 'J.R.R. Tolkien', '2024-07-02', 'Medium', 'Default'));
-addItem(createItem('The Lord of the Rings (single-volume)', 'J.R.R. Tolkien', '2024-07-03', 'High', 'Default'));
-addItem(createItem('The Silmarillion', 'J.R.R. Tolkien', '2024-07-04', 'Low', 'Default'));
+retrieveItemsFromStorage();
+retrieveProjectsFromStorage();
 
-if (getProjectIDCount() < 1) {
+if (getItemIDCount() < 1 && getProjectIDCount() < 1) {
+    addItem(createItem('The Hobbit', 'J.R.R. Tolkien', '2024-07-02', 'Medium', 'Default')); // Create a sample item.
     addProject(createProject('Default')); // Create a default project.
 }
 
-retrieveProjectsFromStorage();
 showAllItems();
 showAllProjects();
 addProjectsToForm(itemProjects);
 
 const clearStorageButton = document.querySelector('#clear-storage-button');
 clearStorageButton.addEventListener('click', () => {
+    resetItemIDCount();
     resetProjectIDCount();
+    
     localStorage.clear();
-    addProject(createProject('Default')); // Recreate a default project.
+
+    addItem(createItem('The Hobbit', 'J.R.R. Tolkien', '2024-07-02', 'Medium', 'Default')); // Recreate the sample item.
+    addProject(createProject('Default')); // Recreate the default project.
 });

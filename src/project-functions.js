@@ -10,7 +10,7 @@ showAll.addEventListener('click', showAllItems.bind(this, false));
 const itemProjects = document.querySelector('#item-projects'); // The project list in the Add To-Do Item form
 
 function retrieveProjectsFromStorage() { // Called in index.js
-    for (let i = 0; i <= getProjectIDCount(); i++) { // projectIDCount is in project.js.
+    for (let i = 0; i <= getProjectIDCount(); i++) { // getProjectIDCount() is in project.js.
         if (localStorage.getItem(`project${i}`)) {
             let fromStorage = localStorage.getItem(`project${i}`);
             let parsedTitle = JSON.parse(fromStorage).title;
@@ -23,8 +23,8 @@ function addProject(item, newProject = true) { // Add a project to the allProjec
     allProjects.push(item);
     
     if (newProject) { // Only add new projects to localStorage (newProject must be true).
-        let itemToJSON = JSON.stringify({ projectID: item['projectID'], title: item.getTitle() })
-        localStorage.setItem(`project${item.projectID}`, itemToJSON);
+        let projectToJSON = JSON.stringify({ projectID: item['projectID'], title: item.getTitle() });
+        localStorage.setItem(`project${item.projectID}`, projectToJSON);
     }
 }
 

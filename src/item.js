@@ -2,9 +2,16 @@ let itemIDCount = 0;
 const getItemIDCount = () => itemIDCount;
 const resetItemIDCount = () => itemIDCount = 0;
 
-function createItem(title, details, dueDate, priority, project) {
-    const itemID = itemIDCount;
-    itemIDCount++;
+function createItem(title, details, dueDate, priority, project, storedChecklist = false, storedItemID = false) {
+    let itemID;
+    
+    if (!storedItemID) {
+        itemID = itemIDCount;
+        itemIDCount++;
+    } else {
+        itemID = storedItemID;
+        itemIDCount = storedItemID + 1;
+    }
 
     const getTitle = () => title;
     const setTitle = newTitle => title = newTitle;
@@ -17,7 +24,7 @@ function createItem(title, details, dueDate, priority, project) {
     const getProject = () => project;
     const setProject = newProject => project = newProject;
 
-    let checklist = false;
+    let checklist = storedChecklist;
     const getChecklist = () => checklist;
     const setChecklist = () => checklist = switchChecklist(checklist);
 

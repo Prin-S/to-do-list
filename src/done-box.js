@@ -1,19 +1,19 @@
 import { allToDos, currentProject, showAllItems } from './item-functions.js';
 
-function createDoneBox(index, parsedChecklist = false) {
+function createDoneBox(element, parsedChecklist = false) {
     const returnSelection = document.createElement('span');
-    
+
     const itemDone = document.createElement('input');
-    itemDone.setAttribute('id', `done${index}`);
+    itemDone.setAttribute('id', `done${element.itemID}`);
     itemDone.setAttribute('type', 'checkbox');
-    itemDone.setAttribute('name', `done${index}`);
-    itemDone.addEventListener('click', toggleDone.bind(this, index));
+    itemDone.setAttribute('name', `done${element.itemID}`);
+    itemDone.addEventListener('click', toggleDone.bind(this, element));
     
     const itemDoneLabel = document.createElement('label');
-    itemDoneLabel.setAttribute('for', `done${index}`);
+    itemDoneLabel.setAttribute('for', `done${element.itemID}`);
     itemDoneLabel.innerHTML = 'Done?';
 
-    if (allToDos[index].getChecklist() || parsedChecklist) {
+    if (parsedChecklist) {
         itemDone.setAttribute('checked', 'true');
     }
 
@@ -23,20 +23,20 @@ function createDoneBox(index, parsedChecklist = false) {
     return returnSelection; // Return to calling function -> showOneItem(element, index)
 }
 
-function toggleDone(index) {
-    allToDos[index].setChecklist(); // Toggle the Done? box for the item at index.
+function toggleDone(element) {
+    element.setChecklist(); // Toggle the Done? box for the element.
 
     const doneToJSON = JSON.stringify({
-        itemID: allToDos[index].itemID,
-        title: allToDos[index].getTitle(),
-        details: allToDos[index].getDetails(),
-        dueDate: allToDos[index].getDueDate(),
-        priority: allToDos[index].getPriority(),
-        project: allToDos[index].getProject(),
-        checklist: allToDos[index].getChecklist()
+        itemID: element.itemID,
+        title: element.getTitle(),
+        details: element.getDetails(),
+        dueDate: element.getDueDate(),
+        priority: element.getPriority(),
+        project: element.getProject(),
+        checklist: element.getChecklist()
     });
 
-    localStorage.setItem(`item${allToDos[index].itemID}`, doneToJSON); // Update the item in localStorage.
+    localStorage.setItem(`item${element.itemID}`, doneToJSON); // Update the item in localStorage.
 
     showAllItems(currentProject);
 }

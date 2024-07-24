@@ -38,7 +38,7 @@ function showOneProject(element, index) { // Create a button for each project.
     const button = document.createElement('button');
     button.setAttribute('class', 'button');
     button.innerHTML = element.getTitle();
-    button.addEventListener('click', showAllItems.bind(this, button.innerHTML));
+    button.addEventListener('click', showAllItems.bind(this, button.innerHTML)); // Call showAllItems() in item-functions.js.
 
     return button; // Return to calling function -> showAllProjects()
 }

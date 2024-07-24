@@ -9,18 +9,30 @@ const allToDos = [];
 let currentProject = false; // The selected project
 const content = document.querySelector('#content');
 
-function retrieveItemsFromStorage() { // Called in index.js
-    for (let i = 0; i <= getItemIDCount(); i++) { // getItemIDCount() is in item.js.
-        if (localStorage.getItem(`item${i}`)) {
-            const fromStorage = localStorage.getItem(`item${i}`);
+function retrieveItemsFromStorage() { // Called in index.js 
+    const localStorageKeys = Object.keys(localStorage); // Get only keys from localStorage.
+    const onlyItemKeys = [];
+    
+    localStorageKeys.forEach(element => {
+        if (element.slice(0, 4) == 'item') { // If element name starts with item,
+            onlyItemKeys.push(Number(element.slice(4))); // Push only the number that comes after the word item.
+        }
+    });
+
+    onlyItemKeys.sort((a, b) => a - b); // Sort from the smallest to the largest number so that newer items are at the bottom.
+
+    for (const element of onlyItemKeys) {
+        if (localStorage.getItem(`item${element}`)) {
+            const fromStorage = localStorage.getItem(`item${element}`);
             const parsedTitle = JSON.parse(fromStorage).title;
             const parsedDetails = JSON.parse(fromStorage).details;
             const parsedDueDate = JSON.parse(fromStorage).dueDate;
             const parsedPriority = JSON.parse(fromStorage).priority;
             const parsedProject = JSON.parse(fromStorage).project;
             const parsedChecklist = JSON.parse(fromStorage).checklist;
+            const parsedItemID = JSON.parse(fromStorage).itemID;
 
-            addItem(createItem(parsedTitle, parsedDetails, parsedDueDate, parsedPriority, parsedProject, parsedChecklist), false); // Add the item to the allToDos array, but don't add it to localStorage.
+            addItem(createItem(parsedTitle, parsedDetails, parsedDueDate, parsedPriority, parsedProject, parsedChecklist, parsedItemID), false); // Add the item to the allToDos array, but don't add it to localStorage.
         }
     }
 }
@@ -52,7 +64,7 @@ function showAllItems(selectedProject = false) { // Show all items in the allToD
             content.appendChild(showOneItem(element, index));
         } else { // If a project button is clicked, show items under that project only.
             currentProject = selectedProject;
-            if (element.getProject() == selectedProject) { // If item's project is the same as that of the clicked button,
+            if (element.getProject() == selectedProject) { // If the item's project is the same as that of the clicked button,
                 content.appendChild(showOneItem(element, index)); // Add it to #content.
             }
         }
@@ -61,39 +73,41 @@ function showAllItems(selectedProject = false) { // Show all items in the allToD
 
 function showOneItem(element, index) { // Create an entry for each item.
     const box = document.createElement('div');
-    box.setAttribute('id', `box${index}`);
-    
-    const itemSummary = document.createElement('div');
-    itemSummary.setAttribute('id', `item${index}`);
-    itemSummary.innerHTML = `<strong>Task:</strong> ${element.getTitle()} || <strong>Due Date:</strong> ${format(element.getDueDate(), 'd MMMM yyyy')}`;
+    box.setAttribute('id', `box${element.itemID}`);
 
-    if (element.getPriority() == 'High') { // Background color depending on task priority
-        box.setAttribute('class', 'box box-bg-high');
-    } else if (element.getPriority() == 'Medium') {
-        box.setAttribute('class', 'box box-bg-medium');
-    } else {
-        box.setAttribute('class', 'box box-bg-low');
+    if (localStorage.getItem(`item${element.itemID}`)) { // If `item${element.itemID}` is found in localStorage,
+        const itemSummary = document.createElement('div');
+        itemSummary.setAttribute('id', `item${element.itemID}`);
+        itemSummary.innerHTML = `<strong>Task:</strong> ${element.getTitle()} || <strong>Due Date:</strong> ${format(element.getDueDate(), 'd MMMM yyyy')}`;
+
+        if (element.getPriority() == 'High') { // Background color depending on task priority
+            box.setAttribute('class', 'box box-bg-high');
+        } else if (element.getPriority() == 'Medium') {
+            box.setAttribute('class', 'box box-bg-medium');
+        } else {
+            box.setAttribute('class', 'box box-bg-low');
+        }
+
+        const selections = document.createElement('div');
+        selections.setAttribute('class', 'selections');
+
+        const fromStorage = localStorage.getItem(`item${element.itemID}`); // Get the current item from localStorage.
+        const parsedChecklist = JSON.parse(fromStorage).checklist; // Is the item marked as done or not?
+
+        if (parsedChecklist) { // If the item is marked as done,
+            itemSummary.setAttribute('class', 'strike-through'); // Strike through the task name and due date.
+            selections.appendChild(createDoneBox(element, parsedChecklist)); // Check the Done? box.
+        } else { // The element's Done? box is not checked.
+            selections.appendChild(createDoneBox(element));
+        }
+
+        selections.appendChild(createRemoveButton(element.itemID));
+        selections.appendChild(createExpandButton(element));
+        selections.appendChild(createEditButton(element));
+
+        box.appendChild(itemSummary);
+        box.appendChild(selections);
     }
-
-    const selections = document.createElement('div');
-    selections.setAttribute('class', 'selections');
-
-    const fromStorage = localStorage.getItem(`item${index}`); // Get the current item from localStorage.
-    const parsedChecklist = JSON.parse(fromStorage).checklist; // Is the item marked as done or not?
-
-    if (element.getChecklist() || parsedChecklist) { // Strike through and check the Done? box for done items.
-        itemSummary.setAttribute('class', 'strike-through');
-        selections.appendChild(createDoneBox(index, true));
-    } else {
-        selections.appendChild(createDoneBox(index));
-    }
-    
-    selections.appendChild(createRemoveButton(index));
-    selections.appendChild(createExpandButton(element, index));
-    selections.appendChild(createEditButton(element, index));
-
-    box.appendChild(itemSummary);
-    box.appendChild(selections);
 
     return box; // Return to calling function -> showAllItems()
 }
@@ -119,7 +133,7 @@ function submitItemForm(event) {
     addItem(createItem(itemTitle.value, itemDetails.value, itemDueDate.value, itemPriority.value, itemProject.value)); // Create an object and add to the allToDos array.
     itemDialog.close();
     content.appendChild(showOneItem(allToDos[allToDos.length - 1], allToDos.length - 1)); // showOneItem(element, index) - Access latest item in the allToDos array and append it to #content.
-    
+
     event.preventDefault();
 }
 

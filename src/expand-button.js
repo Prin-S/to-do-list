@@ -1,16 +1,16 @@
-function createExpandButton(element, index) {
+function createExpandButton(element) {
     const expandButton = document.createElement('button');
-    expandButton.setAttribute('id', `expand${index}`);
+    expandButton.setAttribute('id', `expand${element.itemID}`);
     expandButton.setAttribute('class', 'box-button');
     expandButton.innerHTML = 'More';
-    expandButton.addEventListener('click', expandItem.bind(this, element, index));
+    expandButton.addEventListener('click', expandItem.bind(this, element));
 
     return expandButton; // Return to calling function -> showOneItem(element, index)
 }
 
-function expandItem(element, index) {
-    const expandedBox = document.querySelector(`#box${index}`);
-    const expandedExpandButton = document.querySelector(`#expand${index}`);
+function expandItem(element) {
+    const expandedBox = document.querySelector(`#box${element.itemID}`);
+    const expandedExpandButton = document.querySelector(`#expand${element.itemID}`);
 
     const itemDetails = document.createElement('div');
     itemDetails.innerHTML = `<strong>Details:</strong> ${element.getDetails()}`;

@@ -49,7 +49,7 @@ function showAllProjects() { // Show all projects in the allProjects array. / Ca
     allProjects.forEach((element, index) => nav.appendChild(showOneProject(element, index))); // Attach to the nav element.
 }
 
-function showOneProject(element, index) { // Create a button for each project.
+function showOneProject(element) { // Create a button for each project.
     const button = document.createElement('button');
     button.setAttribute('class', 'button');
     button.innerHTML = element.getProjectTitle();

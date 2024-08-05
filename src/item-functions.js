@@ -71,7 +71,7 @@ function showAllItems(selectedProject = false) { // Show all items in the allToD
     });
 }
 
-function showOneItem(element, index) { // Create an entry for each item.
+function showOneItem(element) { // Create an entry for each item.
     const box = document.createElement('div');
     box.setAttribute('id', `box${element.getItemID()}`);
 

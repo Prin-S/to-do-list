@@ -2,14 +2,22 @@ let projectIDCount = 0;
 const getProjectIDCount = () => projectIDCount;
 const resetProjectIDCount = () => projectIDCount = 0;
 
-function createProject(title) {
-    const projectID = projectIDCount;
-    projectIDCount++;
+function createProject(title, storedProjectID = false) {
+    let projectID;
     
-    const getTitle = () => title;
-    const setTitle = newTitle => title = newTitle;
+    if (!storedProjectID) {
+        projectID = projectIDCount;
+        projectIDCount++;
+    } else {
+        projectID = storedProjectID;
+        projectIDCount = storedProjectID + 1;
+    }
 
-    return { projectID, getTitle, setTitle };
+    const getProjectID = () => projectID;
+    const getProjectTitle = () => title;
+    const setProjectTitle = newTitle => title = newTitle;
+
+    return { getProjectID, getProjectTitle, setProjectTitle };
 }
 
 export { getProjectIDCount, resetProjectIDCount, createProject };

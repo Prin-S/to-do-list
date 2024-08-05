@@ -3,7 +3,7 @@ import { addProjectsToForm } from './project-functions.js';
 
 function createEditButton(element) {
     const editButton = document.createElement('button');
-    editButton.setAttribute('id', `edit${element.itemID}`);
+    editButton.setAttribute('id', `edit${element.getItemID()}`);
     editButton.setAttribute('class', 'box-button');
     editButton.innerHTML = 'Edit';
     editButton.addEventListener('click', editItem.bind(this, element));
@@ -23,12 +23,13 @@ function editItem(element) {
     editItemDetailsForm.addEventListener('submit', submitEditItemDetailsForm); // When the Submit button in the edit item form is clicked,
 
     function submitEditItemDetailsForm() {
-        const editedItemTitle = document.querySelector(`#title${element.itemID}`);
-        const editedItemDetails = document.querySelector(`#details${element.itemID}`);
-        const editedItemDueDate = document.querySelector(`#due-date${element.itemID}`);
-        const editedItemPriority = document.querySelector(`input[name=priority${element.itemID}]:checked`);
-        const editedItemProject = document.querySelector(`input[name=project${element.itemID}]:checked`);
+        const editedItemTitle = document.querySelector(`#title${element.getItemID()}`);
+        const editedItemDetails = document.querySelector(`#details${element.getItemID()}`);
+        const editedItemDueDate = document.querySelector(`#due-date${element.getItemID()}`);
+        const editedItemPriority = document.querySelector(`input[name=priority${element.getItemID()}]:checked`);
+        const editedItemProject = document.querySelector(`input[name=project${element.getItemID()}]:checked`);
 
+        // Set the value of each property of the edited object in the allToDos array.
         element.setTitle(editedItemTitle.value);
         element.setDetails(editedItemDetails.value);
         element.setDueDate(editedItemDueDate.value);
@@ -36,7 +37,7 @@ function editItem(element) {
         element.setProject(editedItemProject.value);
 
         const editedToJSON = JSON.stringify({
-            itemID: element.itemID,
+            itemID: element.getItemID(),
             title: element.getTitle(),
             details: element.getDetails(),
             dueDate: element.getDueDate(),
@@ -45,7 +46,7 @@ function editItem(element) {
             checklist: element.getChecklist()
         });
     
-        localStorage.setItem(`item${element.itemID}`, editedToJSON); // Update the item in localStorage.
+        localStorage.setItem(`item${element.getItemID()}`, editedToJSON); // Update the item in localStorage.
 
         showAllItems(currentProject);
         editItemDetailsDialog.close();
@@ -73,37 +74,39 @@ function editItem(element) {
 
     const itemTitleLabel = document.createElement('label');
     itemTitleLabel.setAttribute('class', 'label');
-    itemTitleLabel.setAttribute('for', `title${element.itemID}`);
+    itemTitleLabel.setAttribute('for', `title${element.getItemID()}`);
     itemTitleLabel.innerHTML = 'Task: ';
 
     const itemTitle = document.createElement('input');
-    itemTitle.setAttribute('id', `title${element.itemID}`);
+    itemTitle.setAttribute('id', `title${element.getItemID()}`);
     itemTitle.setAttribute('type', 'text');
-    itemTitle.setAttribute('name', `title${element.itemID}`);
+    itemTitle.setAttribute('name', `title${element.getItemID()}`);
     itemTitle.setAttribute('required', '');
     itemTitle.setAttribute('value', element.getTitle());
 
     const itemDetailsLabel = document.createElement('label');
     itemDetailsLabel.setAttribute('class', 'label');
-    itemDetailsLabel.setAttribute('for', `details${element.itemID}`);
+    itemDetailsLabel.setAttribute('for', `details${element.getItemID()}`);
     itemDetailsLabel.innerHTML = 'Details: ';
 
-    const itemDetails = document.createElement('input');
-    itemDetails.setAttribute('id', `details${element.itemID}`);
-    itemDetails.setAttribute('type', 'text');
-    itemDetails.setAttribute('name', `details${element.itemID}`);
+    const itemDetails = document.createElement('textarea');
+    itemDetails.setAttribute('id', `details${element.getItemID()}`);
+    itemDetails.setAttribute('name', `details${element.getItemID()}`);
+    itemDetails.setAttribute('rows', '4');
+    itemDetails.setAttribute('cols', '20');
     itemDetails.setAttribute('required', '');
     itemDetails.setAttribute('value', element.getDetails());
+    itemDetails.innerHTML = element.getDetails(); // Show the item's details in the textarea element.
 
     const itemDueDateLabel = document.createElement('label');
     itemDueDateLabel.setAttribute('class', 'label');
-    itemDueDateLabel.setAttribute('for', `due-date${element.itemID}`);
+    itemDueDateLabel.setAttribute('for', `due-date${element.getItemID()}`);
     itemDueDateLabel.innerHTML = 'Due Date: ';
 
     const itemDueDate = document.createElement('input');
-    itemDueDate.setAttribute('id', `due-date${element.itemID}`);
+    itemDueDate.setAttribute('id', `due-date${element.getItemID()}`);
     itemDueDate.setAttribute('type', 'date');
-    itemDueDate.setAttribute('name', `due-date${element.itemID}`);
+    itemDueDate.setAttribute('name', `due-date${element.getItemID()}`);
     itemDueDate.setAttribute('required', '');
     itemDueDate.setAttribute('value', element.getDueDate());
 
@@ -116,7 +119,7 @@ function editItem(element) {
 
     itemPriorityHigh.setAttribute('id', 'high');
     itemPriorityHigh.setAttribute('type', 'radio');
-    itemPriorityHigh.setAttribute('name', `priority${element.itemID}`);
+    itemPriorityHigh.setAttribute('name', `priority${element.getItemID()}`);
     itemPriorityHigh.setAttribute('required', '');
     itemPriorityHigh.setAttribute('value', 'High');
 
@@ -128,7 +131,7 @@ function editItem(element) {
 
     itemPriorityMedium.setAttribute('id', 'medium');
     itemPriorityMedium.setAttribute('type', 'radio');
-    itemPriorityMedium.setAttribute('name', `priority${element.itemID}`);
+    itemPriorityMedium.setAttribute('name', `priority${element.getItemID()}`);
     itemPriorityMedium.setAttribute('value', 'Medium');
 
     itemPriorityMediumLabel.setAttribute('for', 'medium');
@@ -139,7 +142,7 @@ function editItem(element) {
 
     itemPriorityLow.setAttribute('id', 'low');
     itemPriorityLow.setAttribute('type', 'radio');
-    itemPriorityLow.setAttribute('name', `priority${element.itemID}`);
+    itemPriorityLow.setAttribute('name', `priority${element.getItemID()}`);
     itemPriorityLow.setAttribute('value', 'Low');
 
     itemPriorityLowLabel.setAttribute('for', 'low');
@@ -168,7 +171,7 @@ function editItem(element) {
 
     const itemProject = document.createElement('div');
     itemProject.appendChild(itemProjectLabel);
-    addProjectsToForm(itemProject, element, element.itemID); // Populate the project list and check the box of the project that the edited item belongs to.
+    addProjectsToForm(itemProject, element, element.getItemID()); // Populate the project list and check the box of the project that the edited item belongs to.
 
     editItemDetailsForm.appendChild(itemTitleLabel);
     editItemDetailsForm.appendChild(itemTitle);

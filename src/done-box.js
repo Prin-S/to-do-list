@@ -1,16 +1,16 @@
-import { allToDos, currentProject, showAllItems } from './item-functions.js';
+import { currentProject, showAllItems } from './item-functions.js';
 
 function createDoneBox(element, parsedChecklist = false) {
     const returnSelection = document.createElement('span');
 
     const itemDone = document.createElement('input');
-    itemDone.setAttribute('id', `done${element.itemID}`);
+    itemDone.setAttribute('id', `done${element.getItemID()}`);
     itemDone.setAttribute('type', 'checkbox');
-    itemDone.setAttribute('name', `done${element.itemID}`);
+    itemDone.setAttribute('name', `done${element.getItemID()}`);
     itemDone.addEventListener('click', toggleDone.bind(this, element));
     
     const itemDoneLabel = document.createElement('label');
-    itemDoneLabel.setAttribute('for', `done${element.itemID}`);
+    itemDoneLabel.setAttribute('for', `done${element.getItemID()}`);
     itemDoneLabel.innerHTML = 'Done?';
 
     if (parsedChecklist) {
@@ -27,7 +27,7 @@ function toggleDone(element) {
     element.setChecklist(); // Toggle the Done? box for the element.
 
     const doneToJSON = JSON.stringify({
-        itemID: element.itemID,
+        itemID: element.getItemID(),
         title: element.getTitle(),
         details: element.getDetails(),
         dueDate: element.getDueDate(),
@@ -36,7 +36,7 @@ function toggleDone(element) {
         checklist: element.getChecklist()
     });
 
-    localStorage.setItem(`item${element.itemID}`, doneToJSON); // Update the item in localStorage.
+    localStorage.setItem(`item${element.getItemID()}`, doneToJSON); // Update the item in localStorage.
 
     showAllItems(currentProject);
 }

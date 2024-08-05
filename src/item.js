@@ -13,6 +13,7 @@ function createItem(title, details, dueDate, priority, project, storedChecklist 
         itemIDCount = storedItemID + 1;
     }
 
+    const getItemID = () => itemID;
     const getTitle = () => title;
     const setTitle = newTitle => title = newTitle;
     const getDetails = () => details;
@@ -28,7 +29,7 @@ function createItem(title, details, dueDate, priority, project, storedChecklist 
     const getChecklist = () => checklist;
     const setChecklist = () => checklist = switchChecklist(checklist);
 
-    return { itemID, getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist };
+    return { getItemID, getTitle, setTitle, getDetails, setDetails, getDueDate, setDueDate, getPriority, setPriority, getProject, setProject, getChecklist, setChecklist };
 }
 
 function switchChecklist(checklist) {

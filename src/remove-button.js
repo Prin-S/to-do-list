@@ -1,4 +1,4 @@
-import { allToDos, currentProject, showAllItems } from './item-functions.js';
+import { currentProject, showAllItems } from './item-functions.js';
 
 function createRemoveButton(index) {
     const removeButton = document.createElement('button');
@@ -11,8 +11,6 @@ function createRemoveButton(index) {
 }
 
 function removeItem(index) {
-    //console.log(index);
-    //allToDos.splice(index, 1); // Remove one element starting at index
     localStorage.removeItem(`item${index}`);
     showAllItems(currentProject);
 }

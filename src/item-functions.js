@@ -3,7 +3,7 @@ import { createDoneBox } from './done-box.js';
 import { createRemoveButton } from './remove-button.js';
 import { createExpandButton } from './expand-button.js';
 import { createEditButton } from './edit-button.js';
-import { getItemIDCount, createItem } from './item.js';
+import { createItem } from './item.js';
 
 const allToDos = [];
 let currentProject = false; // The selected project
@@ -42,7 +42,7 @@ function addItem(item, newItem = true) { // Add an item to the allToDos array.
 
     if (newItem) { // Only add new items to localStorage (newItem must be true).
         const itemToJSON = JSON.stringify({
-            itemID: item.itemID,
+            itemID: item.getItemID(),
             title: item.getTitle(),
             details: item.getDetails(),
             dueDate: item.getDueDate(),
@@ -51,7 +51,7 @@ function addItem(item, newItem = true) { // Add an item to the allToDos array.
             checklist: item.getChecklist()
         });
 
-        localStorage.setItem(`item${item.itemID}`, itemToJSON);
+        localStorage.setItem(`item${item.getItemID()}`, itemToJSON);
     }
 }
 
@@ -73,11 +73,11 @@ function showAllItems(selectedProject = false) { // Show all items in the allToD
 
 function showOneItem(element, index) { // Create an entry for each item.
     const box = document.createElement('div');
-    box.setAttribute('id', `box${element.itemID}`);
+    box.setAttribute('id', `box${element.getItemID()}`);
 
-    if (localStorage.getItem(`item${element.itemID}`)) { // If `item${element.itemID}` is found in localStorage,
+    if (localStorage.getItem(`item${element.getItemID()}`)) { // If `item${element.getItemID()}` is found in localStorage,
         const itemSummary = document.createElement('div');
-        itemSummary.setAttribute('id', `item${element.itemID}`);
+        itemSummary.setAttribute('id', `item${element.getItemID()}`);
         itemSummary.innerHTML = `<strong>Task:</strong> ${element.getTitle()} || <strong>Due Date:</strong> ${format(element.getDueDate(), 'd MMMM yyyy')}`;
 
         if (element.getPriority() == 'High') { // Background color depending on task priority
@@ -91,7 +91,7 @@ function showOneItem(element, index) { // Create an entry for each item.
         const selections = document.createElement('div');
         selections.setAttribute('class', 'selections');
 
-        const fromStorage = localStorage.getItem(`item${element.itemID}`); // Get the current item from localStorage.
+        const fromStorage = localStorage.getItem(`item${element.getItemID()}`); // Get the current item from localStorage.
         const parsedChecklist = JSON.parse(fromStorage).checklist; // Is the item marked as done or not?
 
         if (parsedChecklist) { // If the item is marked as done,
@@ -101,7 +101,7 @@ function showOneItem(element, index) { // Create an entry for each item.
             selections.appendChild(createDoneBox(element));
         }
 
-        selections.appendChild(createRemoveButton(element.itemID));
+        selections.appendChild(createRemoveButton(element.getItemID()));
         selections.appendChild(createExpandButton(element));
         selections.appendChild(createEditButton(element));
 

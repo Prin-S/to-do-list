@@ -1,4 +1,4 @@
-import { getProjectIDCount, createProject } from './project.js';
+import { createProject } from './project.js';
 import { showAllItems } from './item-functions.js';
 
 const allProjects = [];
@@ -10,23 +10,38 @@ showAll.addEventListener('click', showAllItems.bind(this, false));
 const itemProjects = document.querySelector('#item-projects'); // The project list in the Add To-Do Item form
 
 function retrieveProjectsFromStorage() { // Called in index.js
-    for (let i = 0; i <= getProjectIDCount(); i++) { // getProjectIDCount() is in project.js.
-        if (localStorage.getItem(`project${i}`)) {
-            const fromStorage = localStorage.getItem(`project${i}`);
-            const parsedTitle = JSON.parse(fromStorage).title;
+    const localStorageKeys = Object.keys(localStorage); // Get only keys from localStorage.
+    const onlyProjectKeys = [];
+    
+    localStorageKeys.forEach(element => {
+        if (element.slice(0, 7) == 'project') { // If element name starts with project,
+            onlyProjectKeys.push(Number(element.slice(7))); // Push only the number that comes after the word project.
+        }
+    });
 
-            addProject(createProject(parsedTitle), false); // Add the project to the allProjects array, but don't add it to localStorage.
+    onlyProjectKeys.sort((a, b) => a - b); // Sort from the smallest to the largest number so that newer projects appear last.
+
+    for (const element of onlyProjectKeys) {
+        if (localStorage.getItem(`project${element}`)) {
+            const fromStorage = localStorage.getItem(`project${element}`);
+            const parsedTitle = JSON.parse(fromStorage).title;
+            const parsedProjectID = JSON.parse(fromStorage).projectID;
+
+            addProject(createProject(parsedTitle, parsedProjectID), false); // Add the project to the allProjects array, but don't add it to localStorage.
         }
     }
 }
 
-function addProject(item, newProject = true) { // Add a project to the allProjects array.
-    allProjects.push(item);
+function addProject(project, newProject = true) { // Add a project to the allProjects array.
+    allProjects.push(project);
     
     if (newProject) { // Only add new projects to localStorage (newProject must be true).
-        const projectToJSON = JSON.stringify({ projectID: item.projectID, title: item.getTitle() });
+        const projectToJSON = JSON.stringify({
+            projectID: project.getProjectID(),
+            title: project.getProjectTitle()
+        });
 
-        localStorage.setItem(`project${item.projectID}`, projectToJSON);
+        localStorage.setItem(`project${project.getProjectID()}`, projectToJSON);
     }
 }
 
@@ -37,7 +52,7 @@ function showAllProjects() { // Show all projects in the allProjects array. / Ca
 function showOneProject(element, index) { // Create a button for each project.
     const button = document.createElement('button');
     button.setAttribute('class', 'button');
-    button.innerHTML = element.getTitle();
+    button.innerHTML = element.getProjectTitle();
     button.addEventListener('click', showAllItems.bind(this, button.innerHTML)); // Call showAllItems() in item-functions.js.
 
     return button; // Return to calling function -> showAllProjects()
@@ -51,11 +66,11 @@ function addProjectsToForm(form, selectedElement = false, selectedIndex = false)
         projectChoice.setAttribute('type', 'radio');
         projectChoice.setAttribute('name', 'project');
         projectChoice.setAttribute('required', '');
-        projectChoice.setAttribute('value', element.getTitle());
+        projectChoice.setAttribute('value', element.getProjectTitle());
 
         const projectLabel = document.createElement('label');
         projectLabel.setAttribute('for', index);
-        projectLabel.innerHTML = element.getTitle();
+        projectLabel.innerHTML = element.getProjectTitle();
         
         form.appendChild(projectChoice);
         form.appendChild(projectLabel);
@@ -63,7 +78,7 @@ function addProjectsToForm(form, selectedElement = false, selectedIndex = false)
         if (selectedElement) { // When the function is called in editItem(element, index), the edited item's element and index are passed in.
             projectChoice.setAttribute('name', `project${selectedIndex}`); // selectedIndex is the index of the edited item.
 
-            if (selectedElement.getProject() == element.getTitle()) {
+            if (selectedElement.getProject() == element.getProjectTitle()) {
                 projectChoice.setAttribute('checked', ''); // Check the box of the project that the edited item belongs to.
             }
         }
